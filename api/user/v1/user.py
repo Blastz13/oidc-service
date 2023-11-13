@@ -20,6 +20,7 @@ from core.fastapi.dependencies import (
     PermissionDependency,
 )
 from core.fastapi.dependencies.permission import IsOwnerDependency, IsAuthenticated
+from core.helpers.cache import Cache, CacheTag
 
 user_router = APIRouter()
 
@@ -53,6 +54,7 @@ async def create_user(request: CreateUserRequestSchema):
     responses={"404": {"model": ExceptionResponseSchema}},
     status_code=201
 )
+@Cache.cached(tag=CacheTag.POST_LOGIN, ttl=60)
 async def login(request: LoginRequest):
     token = await UserService().login(email=request.email, password=request.password)
     return {"token": token.token, "refresh_token": token.refresh_token}

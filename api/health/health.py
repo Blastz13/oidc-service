@@ -19,28 +19,6 @@ async def sentry_healthcheck():
     1 / 0
 
 
-@health_router.get("/mongo", status_code=200)
-async def mongo_healthcheck():
-    from core.db.mongo_db import client
-    try:
-        client.admin.command('ping')
-        return {"message": "MongoDB is up"}
-    except Exception as ex:
-        logger.error(ex)
-        return {"message": "MongoDB is down"}
-
-
-@health_router.get("/elastic", status_code=200)
-async def elastic_healthcheck():
-    from core.db.elastic_db import es_client
-    try:
-        await es_client.ping()
-        return {"message": "Elasticsearch is up"}
-    except Exception as ex:
-        logger.error(ex)
-        return {"message": "Elasticsearch is down"}
-
-
 @health_router.get("/redis", status_code=200)
 async def redis_healthcheck():
     try:
